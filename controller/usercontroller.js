@@ -1,4 +1,5 @@
 import userModel from "../modules/user.js";
+import mongoose from "mongoose";
 
 // CREATE USER API
 const createUser = async (req, res) => {
@@ -53,6 +54,9 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const userid = req.params.id
+        if (!mongoose.Types.ObjectId.isValid(userid)) {
+            return res.status(400).json({ success: false, message: 'Invalid User ID' });
+        }
         const updatedUser = await userModel.findByIdAndUpdate(userid, req.body, { new: true })
         if (!updatedUser) {
             return res.status(404).json({ status: false, message: 'User Not Found' })
